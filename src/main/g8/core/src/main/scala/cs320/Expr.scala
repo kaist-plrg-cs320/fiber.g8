@@ -7,7 +7,7 @@ sealed trait Expr
 // variable
 case class Id(name: String) extends Expr
 // integer
-case class IntE(value: Int) extends Expr
+case class IntE(value: BigInt) extends Expr
 // boolean
 case class BooleanE(value: Boolean) extends Expr
 // addition
@@ -27,7 +27,7 @@ case class If(condition: Expr, trueBranch: Expr, falseBranch: Expr) extends Expr
 // tuple
 case class TupleE(expressions: List[Expr]) extends Expr
 // projection
-case class Proj(expression: Expr, index: scala.Int) extends Expr
+case class Proj(expression: Expr, index: Int) extends Expr
 // nil
 case object NilE extends Expr
 // cons
@@ -45,7 +45,7 @@ case class Fun(parameters: List[String], body: Expr) extends Expr
 // recursive function
 case class RecFuns(functions: List[FunDef], body: Expr) extends Expr
 // function application
-case class App(fuction: Expr, arguments: List[Expr]) extends Expr
+case class App(function: Expr, arguments: List[Expr]) extends Expr
 // type test
 case class Test(expression: Expr, typ: Type) extends Expr
 
@@ -67,10 +67,10 @@ object Expr extends RegexParsers {
   private lazy val keywords =
     Set("true", "false", "val", "def", "Nil", "if", "else")
 
-  private lazy val n: Parser[Int] =
+  private lazy val n: Parser[BigInt] =
     "-?[0-9]+".r ^^ BigInt.apply
 
-  private lazy val i: Parser[scala.Int] =
+  private lazy val i: Parser[Int] =
     "_[1-9][0-9]*".r ^^ (_.substring(1).toInt)
 
   private lazy val b: Parser[Boolean] =
@@ -185,7 +185,7 @@ object Expr extends RegexParsers {
 
   private sealed trait E6P
   private case class AppP(as: List[Expr]) extends E6P
-  private case class ProjP(i: scala.Int) extends E6P
+  private case class ProjP(i: Int) extends E6P
   private case object EmptyP extends E6P
   private case object NonEmptyP extends E6P
   private case object HeadP extends E6P
