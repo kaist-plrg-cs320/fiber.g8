@@ -180,7 +180,6 @@ class Spec extends SpecBase {
   test(run("{ val u = 2; (false, u) }._2"), "2")
   test(run("(((t) => 2), -1, { val r = true; -1 })._2"), "-1")
   test(run("(((x, v) => 2) :: Nil).head((false :: Nil).head, ((((x) => 1) :: Nil) :: Nil).head.head)"), "2")
-  testExc(run("Nil.head"), "")
   testExc(run("(3, 2)._4"), "")
   testExc(run("(b => b._1 * b._2 / b._3)(0, 6)"), "")
   testExc(run("2 :: 1 + 4"), "")
@@ -195,17 +194,6 @@ class Spec extends SpecBase {
     def odd(x) = if (x == 0) false else even(x - 1);
     (even(10), odd(10), even(9), odd(9))
   """), "(true, false, false, true)")
-  test(run("""
-    def f(x) = if (x % 2 == 1) f(x - 1) else x + g(x);
-    def g(x) = if (x == 0) 0 else x * x + f(x - 2);
-    f(11)
-  """), "250")
-  test(run("""
-    def f(x) = if (x == 0) 0 else (if (x % 3 == 2) h(x - 1) else x + g(x - 1));
-    def g(x) = if (x == 0) 0 else (if (x % 3 == 1) f(x - 1) else x + h(x - 1));
-    def h(x) = if (x == 0) 0 else (if (x % 3 == 0) g(x - 1) else x + f(x - 1));
-    f(9)
-  """), "45")
   test(run("(true, 2, 2, Nil)._4.isEmpty"), "true")
   test(run("(false :: (2, Nil)._2)"), "(false :: Nil)")
   test(run("(1 % -1)"), "0")
