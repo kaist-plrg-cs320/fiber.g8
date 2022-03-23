@@ -93,7 +93,7 @@ object Highlighter extends reader.Highlighter {
       i += l
     }
 
-		val highlighted = new StringBuilder()
+    val highlighted = new StringBuilder()
     for (idx <- colorAt.indices) {
       val prev = if (idx == 0) RESET else colorAt(idx - 1)
       val curr = colorAt(idx)
