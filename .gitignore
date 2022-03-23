@@ -1,10 +1,7 @@
+.sw[op]
 target/
-boot/
-lib_managed/
-src_managed/
-project/plugins/project/
-
+.bsp
 .metals
 .bloop
 .DS_Store
-.sw[op]
+metals.sbt

@@ -58,14 +58,17 @@ case object TupleT extends Type
 case object ListT extends Type
 case object FunctionT extends Type
 
+case class ParsingError(msg: String) extends Exception
+
 object Expr extends RegexParsers {
+
+  private def error(msg: String): Nothing = throw ParsingError(msg)
 
   private def wrapR[T](e: Parser[T]): Parser[T] = "(" ~> e <~ ")"
   private def wrapC[T](e: Parser[T]): Parser[T] = "{" ~> e <~ "}"
   private def wrapS[T](e: Parser[T]): Parser[T] = "[" ~> e <~ "]"
 
-  private lazy val keywords =
-    Set("true", "false", "val", "def", "Nil", "if", "else")
+  val keywords = Set("true", "false", "val", "def", "Nil", "if", "else")
 
   private lazy val n: Parser[BigInt] =
     "-?[0-9]+".r ^^ BigInt.apply
@@ -227,5 +230,5 @@ object Expr extends RegexParsers {
   private def dupCheck(ss: List[String]): Boolean =
     ss.distinct.length != ss.length
 
-  def apply(str: String): Expr = parseAll(e, str).get
+  def apply(str: String): Expr = parseAll(e, str).getOrElse(error(""))
 }

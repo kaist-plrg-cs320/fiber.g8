@@ -1,13 +1,7 @@
-ThisBuild / scalaVersion := "2.13.8"
-ThisBuild / organization := "cs320"
 name := "fiber"
 
-scalacOptions += "-feature"
-scalacOptions += "-deprecation"
-scalacOptions += "-Xlint:unused"
-
-run := (core / Compile / run).evaluated
-test := (core / Test / test).value
+ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / scalacOptions ++= Seq("-feature", "-deprecation", "-Xlint:unused")
 
 lazy val macros = (project in file("macros")).settings(
   libraryDependencies += "org.scala-lang" % "scala-reflect" % scalaVersion.value
@@ -16,8 +10,11 @@ lazy val macros = (project in file("macros")).settings(
 lazy val core = (project in file("core")).settings(
   libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.0" % Test,
   libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-  libraryDependencies += "org.jline" % "jline" % "3.1.3"     
-) dependsOn macros
+  libraryDependencies += "org.jline" % "jline" % "3.21.0",
 
-javaOptions ++= Seq("-Xss1G", "-Xms4G")
-fork := true
+  Test / fork := true,
+  Test / javaOptions ++= Seq("-Xss256M", "-Xms4G")
+).dependsOn(macros)
+
+run := (core / Compile / run).evaluated
+test := (core / Test / test).value
