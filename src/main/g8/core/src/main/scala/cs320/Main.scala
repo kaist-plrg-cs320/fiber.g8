@@ -126,14 +126,13 @@ object Parser extends reader.Parser {
       val i = input.trim
       def isEmpty = i.isEmpty
       def isLastLine = !input.substring(cursor).contains(System.lineSeparator)
-      def isFinished =
+      def isBalanced =
         i.count(_ == '(') == i.count(_ == ')') &&
         i.count(_ == '{') == i.count(_ == '}') &&
-        i.count(_ == '[') == i.count(_ == ']') &&
-        i.last != ';' &&
-        i.last != '=' &&
-        i.last != '>'
-      isEmpty || isLastLine && isFinished
+        i.count(_ == '[') == i.count(_ == ']')
+      val noLast = Set('-', '!', '+', '*', '/', '%', '=', '<', '>', '&', '|', ':', '.', ';')
+      def isFinished = !noLast(i.last)
+      isEmpty || isLastLine && isBalanced && isFinished
     }
     context match {
       case ParseContext.ACCEPT_LINE if acceptLine => default
