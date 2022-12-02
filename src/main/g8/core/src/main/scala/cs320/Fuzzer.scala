@@ -15,7 +15,7 @@ object Fuzzer {
     "node js/fuzzer.js".lazyLines
       .toList
       .sliding(2, 2)
-      .map(l => (l(0), l(1)))
+      .collect { case List(a, b) => a -> b }
       .toList
 
   def interp(expr: String): (String, String) = {
@@ -25,9 +25,9 @@ object Fuzzer {
     } catch {
       case e: Throwable =>
         val res = e match {
-          case _: PLError => "Runtime Error"
+          case _: PLError => "Runtime error"
           case _: TimeoutException => "Timeout"
-          case _ => "Unexpected Error"
+          case _ => "Unexpected error"
         }
         val cause = if (e.getCause != null) e.getCause else e
         val trace = cause.getStackTrace.toList
